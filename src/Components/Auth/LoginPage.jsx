@@ -1,8 +1,35 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const LoginPage = ({handleLogin}) => {
     const[email,setEmail]=useState("")
     const[password,setPassword]=useState("")
+    const handlecredentialLogin=(response)=>{
+        console.log("response-Token", response)
+
+    }
+    useEffect(()=>{
+        const renderGoogleButton = () => {
+            if (!window.google) return
+
+            window.google.accounts.id.initialize({
+                client_id:"596647480379-086436k3p4sfsb94ag5aklqp4afrn9sm.apps.googleusercontent.com",
+                callback:handlecredentialLogin
+            })
+
+            window.google.accounts.id.renderButton(
+                document.getElementById("googleSignIndiv"),
+                { theme: "outline", size: "large", width: "320" }
+            )
+        }
+
+        if (window.google) {
+            renderGoogleButton()
+        } else {
+            window.addEventListener("load", renderGoogleButton)
+        }
+
+        return () => window.removeEventListener("load", renderGoogleButton)
+    },[])
     const submitHandler=(e)=>{
         e.preventDefault();
         console.log("Form Submitted")
@@ -59,6 +86,7 @@ const LoginPage = ({handleLogin}) => {
                                 }}
                             />
                         </div>
+                       
 
                         <button
                             type="submit"
@@ -66,6 +94,11 @@ const LoginPage = ({handleLogin}) => {
                         >
                             Sign In
                         </button>
+                        <div
+                            id="googleSignIndiv"
+                            className='mt-3 flex justify-center'
+                        ></div>
+                        
                     </form>
 
 
